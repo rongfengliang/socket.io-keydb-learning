@@ -1,0 +1,18 @@
+version: '3'
+services:
+  db: 
+    image: eqalpha/keydb
+    command: keydb-server /etc/keydb/keydb.conf --requirepass dalong  --masterauth dalong --active-replica yes --replicaof db2  6379
+    ports:
+     - 6379:6379
+  db2: 
+    image: eqalpha/keydb
+    command: keydb-server /etc/keydb/keydb.conf   --requirepass dalong  --masterauth dalong --active-replica yes --replicaof db  6379
+    ports:
+     - 6380:6379
+  haproxy: 
+    image: haproxytech/haproxy-debian:2.7.5
+    volumes:
+      - "./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+    ports:
+    - "5002:6379"
